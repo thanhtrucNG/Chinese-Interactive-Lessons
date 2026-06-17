@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>第十六课：你常去图书馆吗？</title>
+  <style>
+    :root{
+      --bg:#f7f3ea;
+      --paper:#fffdf7;
+      --ink:#2b2723;
+      --muted:#766d62;
+      --line:#ded2be;
+      --red:#8c1f1f;
+      --blue:#2563a8;
+      --green:#2f7651;
+      --purple:#7357a5;
+      --orange:#b85f24;
+      --shadow:0 14px 38px rgba(55,41,24,.14);
+      --radius:22px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:"Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+      background:radial-gradient(circle at top left,#fff8e5 0,#f7f3ea 36%,#eee6d7 100%);
+      color:var(--ink);
+      line-height:1.6;
+    }
+    header{
+      position:sticky;
+      top:0;
+      z-index:20;
+      backdrop-filter:blur(14px);
+      background:rgba(255,253,247,.86);
+      border-bottom:1px solid rgba(122,102,70,.18);
+    }
+    .topbar{
+      max-width:1180px;
+      margin:auto;
+      padding:12px 18px;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .brand{font-weight:800;color:var(--red);letter-spacing:.04em}
+    .toolbar{display:flex;gap:8px;flex-wrap:wrap}
+    button,.navbtn{
+      border:0;
+      border-radius:999px;
+      padding:9px 14px;
+      font-weight:700;
+      cursor:pointer;
+      background:#2d2924;
+      color:white;
+      box-shadow:0 6px 16px rgba(0,0,0,.12);
+      text-decoration:none;
+      font-size:14px;
+    }
+    button.secondary,.navbtn.secondary{background:#efe5d3;color:#3a332d;box-shadow:none;border:1px solid #dacbb5}
+    button:hover,.navbtn:hover{transform:translateY(-1px)}
+    .wrap{max-width:1180px;margin:0 auto;padding:28px 18px 80px}
+    .hero{
+      background:linear-gradient(135deg,#fffdf7,#fff6e5);
+      border:1px solid #eadcc4;
+      border-radius:30px;
+      padding:28px;
+      box-shadow:var(--shadow);
+      position:relative;
+      overflow:hidden;
+    }
+    .hero:after{
+      content:"书";
+      position:absolute;
+      right:26px;
+      top:8px;
+      font-size:110px;
+      color:rgba(140,31,31,.08);
+      font-weight:900;
+    }
+    h1{margin:0;color:#1f1b17;font-size:clamp(32px,5vw,58px);line-height:1.08;font-family:Georgia,"Times New Roman",serif}
+    .subtitle{font-size:clamp(18px,2.5vw,28px);font-weight:800;color:var(--red);margin-top:8px}
+    section{margin-top:28px;background:var(--paper);border:1px solid #eadcc4;border-radius:var(--radius);padding:22px;box-shadow:0 10px 28px rgba(55,41,24,.08)}
+    h2{margin:0 0 18px;font-size:28px;color:var(--red);display:flex;align-items:center;gap:10px}
+    h2 .tag{font-size:14px;background:#f2e4cc;color:#6f421c;border-radius:999px;padding:4px 10px;font-weight:800}
+    h3{margin:22px 0 14px;font-size:22px;color:#3b332b}
+    .lesson-grid{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(260px,.85fr);gap:18px;align-items:start}
+    .scene-card{position:sticky;top:76px;background:#fbf4e8;border:1px solid #e1cfb4;border-radius:20px;padding:14px}
+    .scene-card svg{width:100%;height:auto;display:block;border-radius:16px;background:#f7ead7}
+    .scene-title{font-weight:900;color:#7b281e;margin:10px 4px 4px}
+    .scene-note{color:#6b6259;font-size:14px;margin:0 4px 10px}
+    .dialogue{display:flex;flex-direction:column;gap:13px}
+    .line{border-radius:18px;padding:14px 16px;border:2px solid;background:#fff;position:relative}
+    .speaker{display:inline-flex;align-items:center;border-radius:999px;color:white;font-weight:900;padding:4px 12px;margin-bottom:8px;font-size:15px}
+    .hanzi{font-size:32px;line-height:1.35;font-weight:800;letter-spacing:.02em}
+    .pinyin{font-size:18px;color:#6b6259;margin-top:4px}
+    .viet{font-size:18px;color:#463d35;margin-top:4px;background:rgba(255,255,255,.55);border-radius:12px;padding:6px 10px}
+    .line-actions{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
+    .line-actions button{font-size:13px;padding:7px 10px;background:#4b433b}
+    .mary{border-color:rgba(37,99,168,.35);background:linear-gradient(90deg,rgba(37,99,168,.10),#fff)}
+    .mary .speaker{background:var(--blue)}
+    .maike{border-color:rgba(47,118,81,.35);background:linear-gradient(90deg,rgba(47,118,81,.11),#fff)}
+    .maike .speaker{background:var(--green)}
+    .roleA{border-color:rgba(115,87,165,.36);background:linear-gradient(90deg,rgba(115,87,165,.11),#fff)}
+    .roleA .speaker{background:var(--purple)}
+    .roleB{border-color:rgba(184,95,36,.35);background:linear-gradient(90deg,rgba(184,95,36,.12),#fff)}
+    .roleB .speaker{background:var(--orange)}
+    .hidden-global-pinyin .pinyin{display:none}
+    .hidden-global-viet .viet{display:none}
+    .is-hidden{display:none!important}
+    table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid #e2d4be;border-radius:16px;overflow:hidden;background:white}
+    th,td{padding:10px 12px;border-bottom:1px solid #eadfce;text-align:left;vertical-align:top}
+    th{background:#8c1f1f;color:white;font-size:15px}
+    tr:last-child td{border-bottom:0}
+    td:nth-child(2){font-weight:800;color:#2d2924;font-size:18px}
+    .table-wrap{overflow:auto;border-radius:16px}
+    .note-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+    .note-box{border:2px solid;border-radius:18px;padding:15px;background:#fff}
+    .note-box .label{display:inline-flex;border-radius:999px;color:white;font-weight:900;padding:5px 12px;margin-bottom:10px}
+    .note-blue{border-color:rgba(37,99,168,.35);background:rgba(37,99,168,.06)} .note-blue .label{background:var(--blue)}
+    .note-green{border-color:rgba(47,118,81,.35);background:rgba(47,118,81,.06)} .note-green .label{background:var(--green)}
+    .note-purple{border-color:rgba(115,87,165,.35);background:rgba(115,87,165,.07)} .note-purple .label{background:var(--purple)}
+    .note-orange{border-color:rgba(184,95,36,.35);background:rgba(184,95,36,.07)} .note-orange .label{background:var(--orange)}
+    .pattern{font-size:24px;font-weight:900;color:#301f19;background:white;border-radius:14px;padding:10px 12px;border:1px dashed #d7c4a6;margin:8px 0}
+    .example{background:rgba(255,255,255,.75);border-radius:14px;padding:10px 12px;margin:10px 0;border-left:5px solid currentColor}
+    .example .zh{font-size:24px;font-weight:800;color:#201b16}.example .py{font-size:17px;color:#6b6259}.example .vi{font-size:17px;color:#4c433b}
+    .mini-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+    .card{background:white;border:1px solid #eadcc4;border-radius:16px;padding:14px}
+    .card strong{color:var(--red)}
+    .footer-space{height:40px}
+    @media(max-width:860px){.lesson-grid{grid-template-columns:1fr}.scene-card{position:relative;top:0}.hanzi{font-size:28px}.topbar{align-items:flex-start}.toolbar{width:100%}}
+  </style>
+</head>
+<body id="top">
+  <header>
+    <div class="topbar">
+      <div class="brand">GIÁO TRÌNH HÁN NGỮ 2 • BÀI HỌC</div>
+      <div class="toolbar">
+        <a class="navbtn secondary" href="#top">Về đầu</a>
+        <a class="navbtn secondary" href="#bottom">Xuống cuối</a>
+        <button class="secondary" onclick="toggleGlobal('pinyin')">Ẩn/hiện pinyin</button>
+        <button class="secondary" onclick="toggleGlobal('viet')">Ẩn/hiện tiếng Việt</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap" id="page">
+    <div class="hero">
+      <h1>第十六课：你常去图书馆吗？</h1>
+      <div class="subtitle">Bài 16: Bạn có thường xuyên đến thư viện không?</div>
+    </div>
+
+    <section id="text">
+      <h2>一 课文 <span class="tag">Bài khóa</span></h2>
+      <h3>（一）你常去图书馆吗</h3>
+      <div class="lesson-grid">
+        <div class="dialogue">
+          <div class="line mary"><span class="speaker">玛丽</span><div class="hanzi">我现在去图书馆，你跟我一起去，好吗？</div><div class="pinyin">Wǒ xiànzài qù túshūguǎn, nǐ gēn wǒ yìqǐ qù, hǎo ma?</div><div class="viet">Bây giờ tôi đi thư viện, bạn đi cùng tôi nhé?</div><div class="line-actions"><button onclick="speakZh(this)">🔊 Nghe</button><button onclick="toggleLine(this,'viet')">Ẩn/hiện dịch</button></div></div>
+          <div class="line maike"><span class="speaker">麦克</span><div class="hanzi">好，咱们走吧。……你常去图书馆吗？</div><div class="pinyin">Hǎo, zánmen zǒu ba. …… Nǐ cháng qù túshūguǎn ma?</div><div class="viet">Được, chúng mình đi thôi. Bạn có thường đến thư viện không?</div><div class="line-actions"><button onclick="speakZh(this)">🔊 Nghe</button><button onclick="toggleLine(this,'viet')">Ẩn/hiện dịch</button></div></div>
+          <div class="line mary"><span class="speaker">玛丽</span><div class="hanzi">常去。我常借书，也常在那儿看书。你呢？常去吗？</div><div class="pinyin">Cháng qù. Wǒ cháng jiè shū, yě cháng zài nàr kàn shū. Nǐ ne? Cháng qù ma?</div><div class="viet">Tôi thường đi. Tôi thường mượn sách, cũng thường đọc sách ở đó. Còn bạn thì sao? Có thường đi không?</div><div class="line-actions"><button onclick="speakZh(this)">🔊 Nghe</button><button onclick="toggleLine(this,'viet')">Ẩn/hiện dịch</button></div></div>
+          <div class="line maike"><span class="speaker">麦克</span><div class="hanzi">我也常去。有时候借书，有时候上网查资料，但不常在那儿看书。我总在宿舍看书。</div><div class="pinyin">Wǒ yě cháng qù. Yǒu shíhou jiè shū, yǒu shíhou shàng wǎng chá zīliào, dàn bù cháng zài nàr kàn shū. Wǒ zǒng zài sùshè kàn shū.</div><div class="viet">Tôi cũng thường đi. Có lúc mượn sách, có lúc lên mạng tra tài liệu, nhưng không thường đọc sách ở đó. Tôi luôn đọc sách ở ký túc xá.</div><div class="line-actions"><button onclick="speakZh(this)">🔊 Nghe</button><button onclick="toggleLine(this,'viet')">Ẩn/hiện dịch</button></div></div>
+          <div class="line mary"><span class="speaker">玛丽</span><div class="hanzi">你的宿舍安静吗？</div><div class="pinyin">Nǐ de sùshè ānjìng ma?</div><div class="viet">Ký túc xá của bạn yên tĩnh không?</div><div class="line-actions"><button onclick="speakZh(this)">🔊 Nghe</button><button onclick="toggleLine(this,'viet')">Ẩn/hiện dịch</button></div></div>
+          <div class="line maike"><span class="speaker">麦克</span><div class="hanzi">很安静。</div><div class="pinyin">Hěn ānjìng.</div><div class="viet">Rất yên tĩnh.</div><div class="line-actions"><button onclick="speakZh(this)">🔊 Nghe</button><button onclick="toggleLine(this,'viet')">Ẩn/hiện dịch</button></div></div>
+        </div>
+        <aside class="scene-card">
+          <svg viewBox="0 0 520 380" role="img" aria-label="Sinh viên trong phòng đọc thư viện">
+            <rect width="520" height="380" fill="#f4e2c9"/><rect x="28" y="44" width="270" height="204" rx="8" fill="#caa982"/><g fill="#7a5030"><rect x="48" y="68" width="230" height="12"/><rect x="48" y="112" width="230" height="12"/><rect x="48" y="156" width="230" height="12"/><rect x="48" y="200" width="230" height="12"/></g><g fill="#efe8d8"><rect x="56" y="76" width="18" height="34"/><rect x="82" y="76" width="12" height="34"/><rect x="104" y="76" width="20" height="34"/><rect x="136" y="76" width="14" height="34"/><rect x="170" y="76" width="24" height="34"/><rect x="58" y="120" width="26" height="34"/><rect x="96" y="120" width="15" height="34"/><rect x="126" y="120" width="21" height="34"/><rect x="166" y="120" width="13" height="34"/><rect x="194" y="120" width="24" height="34"/><rect x="56" y="164" width="18" height="34"/><rect x="88" y="164" width="28" height="34"/><rect x="128" y="164" width="12" height="34"/><rect x="154" y="164" width="24" height="34"/><rect x="198" y="164" width="16" height="34"/></g><rect x="75" y="276" width="240" height="18" rx="4" fill="#8b6343"/><rect x="100" y="292" width="16" height="54" fill="#6c4c34"/><rect x="278" y="292" width="16" height="54" fill="#6c4c34"/><circle cx="395" cy="106" r="34" fill="#f0c8a4"/><path d="M361 94c18-48 80-36 85 8-21-11-43-10-85-8z" fill="#3e312a"/><path d="M374 145c42 12 72 48 82 111l-92 3c5-38-3-76 10-114z" fill="#e9efe8"/><path d="M454 259c10 35 6 65-8 88h-25c16-30 15-55 0-86z" fill="#3b526f"/><path d="M388 261c-16 28-34 47-54 64l-19-16c20-19 36-39 48-62z" fill="#3b526f"/><path d="M384 174c-24 20-46 33-72 42" stroke="#f0c8a4" stroke-width="15" stroke-linecap="round"/><rect x="275" y="202" width="76" height="52" rx="4" fill="#d8dee8"/><text x="335" y="36" font-size="28" fill="#7b281e" font-weight="800">阅览室</text>
+          </svg>
+          <p class="scene-title">Cảnh 1: Thư viện / phòng đọc</p>
+        </aside>
+      </div>
+
+      <h3>（二）晚上你常做什么</h3>
+      <div class="lesson-grid">
+        <div class="dialogue">
+          <div class="line roleA"><span class="speaker">A</span><div class="hanzi">晚上你常做什么？</div><div class="pinyin">Wǎnshang nǐ cháng zuò shénme?</div><div class="viet">Buổi tối bạn thường làm gì?</div><div class="line-actions"><button onclick="speakZh(this)">🔊 Nghe</button><button onclick="toggleLine(this,'viet')">Ẩn/hiện dịch</button></div></div>
+          <div class="line roleB"><span class="speaker">B</span><div class="hanzi">复习课文，预习生词，或者做练习。有时候上网跟朋友聊天儿或者收发伊妹儿。</div><div class="pinyin">Fùxí kèwén, yùxí shēngcí, huòzhě zuò liànxí. Yǒu shíhou shàng wǎng gēn péngyou liáo tiānr huòzhě shōufā yīmèir.</div><div class="viet">Ôn bài khóa, chuẩn bị từ mới, hoặc làm bài tập. Có lúc lên mạng nói chuyện với bạn bè hoặc nhận gửi email.</div><div class="line-actions"><button onclick="speakZh(this)">🔊 Nghe</button><button onclick="toggleLine(this,'viet')">Ẩn/hiện dịch</button></div></div>
+          <div class="line roleA"><span class="speaker">A</span><div class="hanzi">我也是，我还常看中文电影和电视剧的DVD。你常看吗？</div><div class="pinyin">Wǒ yě shì, wǒ hái cháng kàn Zhōngwén diànyǐng hé diànshìjù de DVD. Nǐ cháng kàn ma?</div><div class="viet">Tôi cũng vậy, tôi còn thường xem DVD phim điện ảnh và phim truyền hình tiếng Trung. Bạn có thường xem không?</div><div class="line-actions"><button onclick="speakZh(this)">🔊 Nghe</button><button onclick="toggleLine(this,'viet')">Ẩn/hiện dịch</button></div></div>
+          <div class="line roleB"><span class="speaker">B</span><div class="hanzi">我很少看。</div><div class="pinyin">Wǒ hěn shǎo kàn.</div><div class="viet">Tôi rất ít xem.</div><div class="line-actions"><button onclick="speakZh(this)">🔊 Nghe</button><button onclick="toggleLine(this,'viet')">Ẩn/hiện dịch</button></div></div>
+          <div class="line roleA"><span class="speaker">A</span><div class="hanzi">星期六和星期日你做什么？</div><div class="pinyin">Xīngqīliù hé xīngqīrì nǐ zuò shénme?</div><div class="viet">Thứ bảy và chủ nhật bạn làm gì?</div><div class="line-actions"><button onclick="speakZh(this)">🔊 Nghe</button><button onclick="toggleLine(this,'viet')">Ẩn/hiện dịch</button></div></div>
+          <div class="line roleB"><span class="speaker">B</span><div class="hanzi">有时候在宿舍休息，有时候跟朋友一起去公园玩儿或者去超市买东西。</div><div class="pinyin">Yǒu shíhou zài sùshè xiūxi, yǒu shíhou gēn péngyou yìqǐ qù gōngyuán wánr huòzhě qù chāoshì mǎi dōngxi.</div><div class="viet">Có lúc nghỉ ở ký túc xá, có lúc cùng bạn bè đi công viên chơi hoặc đi siêu thị mua đồ.</div><div class="line-actions"><button onclick="speakZh(this)">🔊 Nghe</button><button onclick="toggleLine(this,'viet')">Ẩn/hiện dịch</button></div></div>
+        </div>
+        <aside class="scene-card">
+          <svg viewBox="0 0 520 380" role="img" aria-label="Sinh viên học buổi tối trong ký túc xá">
+            <rect width="520" height="380" fill="#efe3d1"/><rect x="30" y="48" width="200" height="116" rx="12" fill="#c9d8e6"/><rect x="44" y="62" width="172" height="88" rx="8" fill="#fbfbf8"/><path d="M70 250h260v20H70z" fill="#916947"/><path d="M100 270h18v70h-18zM286 270h18v70h-18z" fill="#6a4a33"/><rect x="96" y="188" width="116" height="72" rx="8" fill="#c8ced8"/><rect x="110" y="202" width="88" height="44" rx="4" fill="#eef2f6"/><circle cx="370" cy="122" r="34" fill="#edc19c"/><path d="M332 110c7-42 66-52 82-10-25-5-48-1-82 10z" fill="#2d2924"/><path d="M336 164c58-20 96 25 100 98H326c0-42-4-78 10-98z" fill="#8c1f1f"/><path d="M332 209c-22 12-47 18-76 19" stroke="#edc19c" stroke-width="15" stroke-linecap="round"/><path d="M418 215c21 8 39 22 55 44" stroke="#edc19c" stroke-width="15" stroke-linecap="round"/><rect x="352" y="260" width="38" height="78" fill="#364a68"/><rect x="396" y="260" width="38" height="78" fill="#364a68"/><circle cx="450" cy="82" r="24" fill="#f6cf67" opacity=".85"/><text x="58" y="92" font-size="18" fill="#8c1f1f" font-weight="800">晚上复习</text><text x="58" y="122" font-size="18" fill="#8c1f1f" font-weight="800">上网聊天儿</text>
+          </svg>
+          <p class="scene-title">Cảnh 2: Buổi tối ở ký túc xá</p>
+        </aside>
+      </div>
+    </section>
+
+    <section id="words">
+      <h2>二 生词 <span class="tag">Từ mới</span></h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>STT</th><th>词</th><th>Loại từ</th><th>Pinyin</th><th>Hán Việt</th><th>English</th><th>Nghĩa tiếng Việt</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>现在</td><td>名</td><td>xiànzài</td><td>hiện tại</td><td>now</td><td>bây giờ</td></tr>
+            <tr><td>2</td><td>跟</td><td>介, 动</td><td>gēn</td><td>cân</td><td>with; to follow</td><td>cùng, với; đi theo</td></tr>
+            <tr><td>3</td><td>一起</td><td>副</td><td>yìqǐ</td><td>nhất khởi</td><td>together</td><td>cùng nhau</td></tr>
+            <tr><td>4</td><td>咱们</td><td>代</td><td>zánmen</td><td>ta môn</td><td>we; us</td><td>chúng tôi, chúng ta</td></tr>
+            <tr><td>5</td><td>走</td><td>动</td><td>zǒu</td><td>tẩu</td><td>to walk; to go</td><td>đi</td></tr>
+            <tr><td>6</td><td>常</td><td>副</td><td>cháng</td><td>thường</td><td>often; usually</td><td>thường, thường xuyên</td></tr>
+            <tr><td>7</td><td>有时候</td><td></td><td>yǒu shíhou</td><td>hữu thời hậu</td><td>sometimes; now and then</td><td>có lúc, có khi</td></tr>
+            <tr><td>8</td><td>时候</td><td>名</td><td>shíhou</td><td>thời hậu</td><td>time</td><td>thời gian, khi, lúc</td></tr>
+            <tr><td>9</td><td>借</td><td>动</td><td>jiè</td><td>tá</td><td>to borrow; to lend</td><td>vay, mượn; cho mượn</td></tr>
+            <tr><td>10</td><td>上网</td><td></td><td>shàng wǎng</td><td>thượng võng</td><td>to log on; surf the Internet</td><td>lên mạng</td></tr>
+            <tr><td>11</td><td>网</td><td>名</td><td>wǎng</td><td>võng</td><td>net</td><td>mạng, nét</td></tr>
+            <tr><td>12</td><td>查</td><td>动</td><td>chá</td><td>tra</td><td>to check; to look up</td><td>kiểm tra; tìm kiếm, tra cứu</td></tr>
+            <tr><td>13</td><td>资料</td><td>名</td><td>zīliào</td><td>tư liệu</td><td>material</td><td>tư liệu, tài liệu</td></tr>
+            <tr><td>14</td><td>总（是）</td><td>副</td><td>zǒng (shì)</td><td>tổng</td><td>always</td><td>luôn luôn</td></tr>
+            <tr><td>15</td><td>安静</td><td>形</td><td>ānjìng</td><td>yên tĩnh</td><td>quiet; peaceful; calm</td><td>yên tĩnh, yên lặng</td></tr>
+            <tr><td>16</td><td>晚上</td><td>名</td><td>wǎnshang</td><td>vãn thượng</td><td>evening</td><td>buổi tối</td></tr>
+            <tr><td>17</td><td>复习</td><td>动</td><td>fùxí</td><td>phúc tập</td><td>to review</td><td>ôn tập</td></tr>
+            <tr><td>18</td><td>课文</td><td>名</td><td>kèwén</td><td>bài khóa</td><td>text</td><td>bài khóa, bài đọc</td></tr>
+            <tr><td>19</td><td>预习</td><td>动</td><td>yùxí</td><td>dự tập</td><td>to preview</td><td>chuẩn bị bài</td></tr>
+            <tr><td>20</td><td>生词</td><td>名</td><td>shēngcí</td><td>sinh từ</td><td>new words</td><td>từ mới</td></tr>
+            <tr><td>21</td><td>或者</td><td>连</td><td>huòzhě</td><td>hoặc giả</td><td>or</td><td>hoặc, hoặc là</td></tr>
+            <tr><td>22</td><td>练习</td><td>动, 名</td><td>liànxí</td><td>luyện tập</td><td>to practise; exercise</td><td>luyện tập; bài tập</td></tr>
+            <tr><td>23</td><td>聊天儿</td><td></td><td>liáo tiānr</td><td>liêu thiên nhi</td><td>to chat</td><td>nói chuyện, tán chuyện</td></tr>
+            <tr><td>24</td><td>收发</td><td>动</td><td>shōufā</td><td>thu phát</td><td>to receive and dispatch</td><td>nhận và chuyển đi</td></tr>
+            <tr><td>25</td><td>收</td><td>动</td><td>shōu</td><td>thu</td><td>to receive; to accept</td><td>thu, nhận</td></tr>
+            <tr><td>26</td><td>发</td><td>动</td><td>fā</td><td>phát</td><td>to dispatch; to send out</td><td>gửi đi, chuyển đi</td></tr>
+            <tr><td>27</td><td>伊妹儿</td><td>名</td><td>yīmèir</td><td>y muội nhi</td><td>e-mail</td><td>mail, thư điện tử</td></tr>
+            <tr><td>28</td><td>电影</td><td>名</td><td>diànyǐng</td><td>điện ảnh</td><td>film; movie</td><td>điện ảnh, phim</td></tr>
+            <tr><td>29</td><td>电视剧</td><td>名</td><td>diànshìjù</td><td>điện thị kịch</td><td>TV drama; TV play</td><td>phim truyền hình</td></tr>
+            <tr><td>30</td><td>电视</td><td>名</td><td>diànshì</td><td>điện thị</td><td>Television; TV</td><td>ti vi, vô tuyến</td></tr>
+            <tr><td>31</td><td>休息</td><td>动</td><td>xiūxi</td><td>hưu tức</td><td>to rest</td><td>nghỉ ngơi</td></tr>
+            <tr><td>32</td><td>宿舍</td><td>名</td><td>sùshè</td><td>túc xá</td><td>dormitory</td><td>kí túc xá</td></tr>
+            <tr><td>33</td><td>公园</td><td>名</td><td>gōngyuán</td><td>công viên</td><td>park</td><td>công viên</td></tr>
+            <tr><td>34</td><td>超市</td><td>名</td><td>chāoshì</td><td>siêu thị</td><td>supermarket</td><td>siêu thị</td></tr>
+            <tr><td>35</td><td>东西</td><td>名</td><td>dōngxi</td><td>đông tây</td><td>thing</td><td>đồ vật</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="notes">
+      <h2>三 注释 <span class="tag">Chú thích</span></h2>
+      <div class="note-grid">
+        <div class="note-box note-blue"><span class="label">（一）……，好吗？</span><p>Đặt “……，好吗？” sau câu trần thuật để biến câu đó thành câu hỏi mang nghĩa đề nghị, thương lượng hoặc xin ý kiến.</p><div class="pattern">Câu trần thuật + ，好吗？</div><div class="example"><div class="zh">晚上咱们去看电影，好吗？</div><div class="py">Wǎnshang zánmen qù kàn diànyǐng, hǎo ma?</div><div class="vi">Tối nay chúng mình đi xem phim nhé?</div></div><div class="example"><div class="zh">你跟我一起去，好吗？</div><div class="py">Nǐ gēn wǒ yìqǐ qù, hǎo ma?</div><div class="vi">Bạn đi cùng tôi nhé?</div></div></div>
+        <div class="note-box note-green"><span class="label">（二）咱们走吧</span><p>“咱们” bao gồm cả người nói và người nghe. “我们” có hai cách dùng: có thể bao gồm người nghe, cũng có thể không bao gồm người nghe.</p><div class="mini-grid"><div class="card"><strong>咱们</strong><br>người nói + người nghe</div><div class="card"><strong>我们</strong><br>có thể bao gồm hoặc không bao gồm người nghe</div></div><div class="example"><div class="zh">晚上咱们一起去吧。</div><div class="py">Wǎnshang zánmen yìqǐ qù ba.</div><div class="vi">Tối nay chúng mình cùng đi nhé.</div></div><div class="example"><div class="zh">你们是留学生，我们是中国学生，咱们是朋友。</div><div class="py">Nǐmen shì liúxuéshēng, wǒmen shì Zhōngguó xuéshēng, zánmen shì péngyou.</div><div class="vi">Các bạn là lưu học sinh, chúng tôi là sinh viên Trung Quốc, chúng ta là bạn bè.</div></div></div>
+        <div class="note-box note-purple"><span class="label">（三）吧</span><p>Trợ từ ngữ khí “吧” đặt ở cuối câu, biểu thị giọng thương lượng, đề nghị, thỉnh cầu hoặc đồng ý.</p><div class="pattern">Câu + 吧</div><div class="example"><div class="zh">咱们一起去吧。</div><div class="py">Zánmen yìqǐ qù ba.</div><div class="vi">Chúng mình cùng đi nhé.</div></div><div class="example"><div class="zh">好吧。</div><div class="py">Hǎo ba.</div><div class="vi">Được thôi.</div></div><div class="example"><div class="zh">走吧。</div><div class="py">Zǒu ba.</div><div class="vi">Đi thôi.</div></div></div>
+        <div class="note-box note-orange"><span class="label">（四）我很少看</span><p>“很少” có nghĩa là không thường xuyên, gần nghĩa với “不常”. “很少” có thể làm trạng ngữ, còn “很多” không dùng làm trạng ngữ theo cách này.</p><div class="mini-grid"><div class="card"><strong>可以说</strong><br>很少吃馒头<br>很少看电影<br>很少看电视</div><div class="card"><strong>不能说</strong><br>很多吃米饭<br>很多看电影<br>很多看电视</div></div><div class="example"><div class="zh">我很少看电视剧。</div><div class="py">Wǒ hěn shǎo kàn diànshìjù.</div><div class="vi">Tôi rất ít xem phim truyền hình.</div></div></div>
+      </div>
+    </section>
+
+    <section id="grammar">
+      <h2>四 语法 <span class="tag">Ngữ pháp</span></h2>
+      <div class="note-grid">
+        <div class="note-box note-blue"><span class="label">（一）时间词语作状语</span><p>Từ ngữ chỉ thời gian trong tiếng Hán thường đứng trước động từ hoặc đứng trước chủ ngữ để biểu thị thời gian của hành động.</p><div class="pattern">Chủ ngữ + thời gian + động từ</div><div class="pattern">Thời gian + chủ ngữ + động từ</div><div class="example"><div class="zh">你晚上做什么？</div><div class="py">Nǐ wǎnshang zuò shénme?</div><div class="vi">Buổi tối bạn làm gì?</div></div><div class="example"><div class="zh">我晚上做练习。</div><div class="py">Wǒ wǎnshang zuò liànxí.</div><div class="vi">Buổi tối tôi làm bài tập.</div></div><div class="example"><div class="zh">下午你常去哪儿？</div><div class="py">Xiàwǔ nǐ cháng qù nǎr?</div><div class="vi">Chiều bạn thường đi đâu?</div></div><div class="example"><div class="zh">我常去图书馆。</div><div class="py">Wǒ cháng qù túshūguǎn.</div><div class="vi">Tôi thường đi thư viện.</div></div></div>
+        <div class="note-box note-green"><span class="label">（二）“还是”和“或者”</span><p>“还是” và “或者” đều có nghĩa là “hoặc”. Khác nhau nằm ở loại câu sử dụng.</p><div class="mini-grid"><div class="card"><strong>还是</strong><br>Dùng trong câu hỏi lựa chọn.</div><div class="card"><strong>或者</strong><br>Dùng trong câu trần thuật.</div></div><div class="example"><div class="zh">你喝茶还是喝咖啡？</div><div class="py">Nǐ hē chá háishi hē kāfēi?</div><div class="vi">Bạn uống trà hay uống cà phê?</div></div><div class="example"><div class="zh">我喝咖啡。</div><div class="py">Wǒ hē kāfēi.</div><div class="vi">Tôi uống cà phê.</div></div><div class="example"><div class="zh">你上午去还是下午去？</div><div class="py">Nǐ shàngwǔ qù háishi xiàwǔ qù?</div><div class="vi">Bạn đi buổi sáng hay buổi chiều?</div></div><div class="example"><div class="zh">下午去。</div><div class="py">Xiàwǔ qù.</div><div class="vi">Đi buổi chiều.</div></div><div class="example"><div class="zh">晚上我常听音乐或者看电视。</div><div class="py">Wǎnshang wǒ cháng tīng yīnyuè huòzhě kàn diànshì.</div><div class="vi">Buổi tối tôi thường nghe nhạc hoặc xem ti vi.</div></div><div class="example"><div class="zh">我常常在宿舍看书或者跟朋友聊天儿。</div><div class="py">Wǒ chángcháng zài sùshè kàn shū huòzhě gēn péngyou liáo tiānr.</div><div class="vi">Tôi thường đọc sách ở ký túc xá hoặc nói chuyện với bạn bè.</div></div></div>
+      </div>
+    </section>
+
+    <section id="phonetics">
+      <h2>五 语音 <span class="tag">Ngữ âm</span></h2>
+      <div class="note-grid">
+        <div class="note-box note-purple"><span class="label">句重音</span><p>Trạng ngữ trong câu thường được đọc nhấn mạnh.</p><div class="example"><div class="zh">她常常去图书馆。</div><div class="py">Tā chángcháng qù túshūguǎn.</div><div class="vi">Cô ấy thường xuyên đi thư viện.</div></div><div class="example"><div class="zh">我很少看电视。</div><div class="py">Wǒ hěn shǎo kàn diànshì.</div><div class="vi">Tôi rất ít xem ti vi.</div></div><div class="example"><div class="zh">你晚上做什么？</div><div class="py">Nǐ wǎnshang zuò shénme?</div><div class="vi">Buổi tối bạn làm gì?</div></div></div>
+        <div class="note-box note-orange"><span class="label">否定副词作状语</span><p>Phó từ phủ định làm trạng ngữ, nếu không nhấn mạnh phủ định thì không đọc nhấn mạnh.</p><div class="example"><div class="zh">她不常看电影。</div><div class="py">Tā bù cháng kàn diànyǐng.</div><div class="vi">Cô ấy không thường xem phim.</div></div></div>
+        <div class="note-box note-blue"><span class="label">……，好吗？</span><p>Khi dùng “……，好吗?”, chữ “好” được đọc nhấn mạnh, cuối câu lên giọng.</p><div class="example"><div class="zh">你跟我一起去，好吗？</div><div class="py">Nǐ gēn wǒ yìqǐ qù, hǎo ma?</div><div class="vi">Bạn đi cùng tôi nhé?</div></div></div>
+      </div>
+    </section>
+
+    <div id="bottom" class="footer-space"></div>
+  </main>
+
+  <script>
+    function toggleGlobal(type){
+      const page=document.getElementById('page');
+      page.classList.toggle(type==='pinyin'?'hidden-global-pinyin':'hidden-global-viet');
+    }
+    function toggleLine(btn,type){
+      const box=btn.closest('.line');
+      const el=box.querySelector('.'+type);
+      if(el) el.classList.toggle('is-hidden');
+    }
+    function speakZh(btn){
+      const text=btn.closest('.line').querySelector('.hanzi').textContent.trim();
+      window.speechSynthesis.cancel();
+      const utter=new SpeechSynthesisUtterance(text);
+      utter.lang='zh-CN';
+      utter.rate=.82;
+      utter.pitch=1;
+      window.speechSynthesis.speak(utter);
+    }
+  </script>
+</body>
+</html>
